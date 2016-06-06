@@ -1,17 +1,28 @@
 begin
+  #required in order to find telegram_bot (see bundler)
   require 'rubygems'
   require 'bundler/setup'
   require 'telegram_bot'
+  #Commands module location
   require './commands.rb'
 rescue LoadError => err
   puts "Failed to load module: #{err}"
   exit 1
 end
 
+#change this constant for the Token
 TOKEN="228855504:AAHh5fhFyEpel0WqTrYNCwVUKy3QeKumDcc"
 
+#Main class
 class PippoBot
+  #include Commands module and all its methods
   include Commands
+
+=begin
+  @BOT_INSTANCE: TelegramBot instance
+  @PATTERN: Regexp pattern for pippo (detects pippo)
+            ^pippo * 
+=end
   attr_reader :BOT_INSTANCE
   attr_reader :PATTERN
 
@@ -20,6 +31,7 @@ class PippoBot
     @PATTERN=/^pippo */
   end
 
+  #call this to start matching commands!
   def messageHandler
     @BOT_INSTANCE.get_updates(fail_silently: false) do |msg|
       msg.reply do |reply|
@@ -31,6 +43,10 @@ class PippoBot
     end
   end
 
+=begin
+  private method called from messageHandler
+  sends function return value
+=end 
   def messageParser(reply,command)
     if command.match(@PATTERN)
       args = command.split(@PATTERN)
@@ -53,6 +69,11 @@ class PippoBot
   private :messageParser
 end
 
+=begin
+You can specify logging file location
+instead of using stdout channel.
+./<file>.rb <logfile>
+=end
 begin
   if ARGV.length == 1 and ARGV.length < 2 then
     puts "--> Logging to: #{ARGV[0]}"

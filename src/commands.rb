@@ -64,9 +64,9 @@ module Commands
     parsedBody = Hash.new
     splitted = String(what).split(" ")
     mixcloudapi="http://api.mixcloud.com/"
-    if splitted.length == 0 then
-      return "--> Not enough arguments"
-    elsif splitted.length >= 1 then
+    return "--> Not enough arguments" if splitted.length == 0
+
+    if splitted.length >= 1 then
       case splitted[0]
       when "details"
         mixcloudapi+=splitted[1] if splitted.length == 2
@@ -97,6 +97,16 @@ module Commands
       end
     else
       return "--> Oops! Error during request!"
+    end
+
+    formattedText=String.new
+    case splitted[0]
+    when "details"
+      if splitted.length == 2
+        #artist only
+      elsif splitted.length > 2
+        #artist and mix
+      end
     end
     
   end

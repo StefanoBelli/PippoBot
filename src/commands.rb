@@ -19,6 +19,12 @@ rescue LoadError => err
   exit 1
 end
 
+=begin
+ Commands module:
+  * contains commands functions
+  * add them to the HASH (Hash) constant
+    (see at the end of the module)
+=end
 module Commands
 =begin
   Utils module:
@@ -79,7 +85,7 @@ module Commands
           mixname[mixname.length-1]=""
           mixname=mixname.downcase.gsub!(" ","-")
           
-          mixcloudapi+=splitted[1]+'/'+mixname
+          mixcloudapi+=splitted[1].to_s+"/".to_s+mixname.to_s
         end
         
         return "--> You should specify <artist> [mix]" if splitted.length == 1
@@ -92,21 +98,38 @@ module Commands
       body = resp.body
       if not body.empty? then
         parsedBody = JSON.parse(body)
+
+        #This condition may be useless
+        if parsedBody["key"] == nil then
+          return "--> Artist / Mix does not exist!"
+        end
+        ##
+        
       else
         return "--> Oops! Got empty body! Can't be parsed!"
       end
     else
-      return "--> Oops! Error during request!"
+      return "--> Oops! Error during request!\n--> Maybe artist/mix doesn't exist!"
     end
 
     formattedText=String.new
     case splitted[0]
     when "details"
-      if splitted.length == 2
-        #artist only
-      elsif splitted.length > 2
+      if splitted.length == 2 then        
+      #artist only
+        formattedText = sprintf "Artist: %s\nArtist Followers: %d\nArtist Following: %d\nArtist Bio: %s\nArtist Cloudcasts: %d\n\
+Artist Mixcloud URL: %s\n",parsedBody["username"], parsedBody["follower_count"], parsedBody["following_count"], parsedBody["biog"],
+                              parsedBody["cloudcast_count"], parsedBody["url"]
+      elsif splitted.length > 2 then
         #artist and mix
+        formattedText = sprintf "Mix: %s\nPlayed: %d times\nFavourites: %d\nRepost: %d times\nMix URL: %s\n",
+                                parsedBody["name"],parsedBody["play_count"],parsedBody["favorite_count"], parsedBody["repost_count"],
+                                parsedBody["url"]
+        formattedText+=sprintf "Mix description: %s\n",parsedBody["description"].to_s if parsedBody["description"] == nil or
+           not parsedBody["description"].empty?
       end
+      #when "search"
+      
     end
     
   end

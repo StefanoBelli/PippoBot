@@ -33,7 +33,7 @@ module Commands
   module Utils
     #Utils.makeHTTPRequest : makes an HTTP request and returns response
     def Utils.makeHTTPRequest(url)
-      uriPath = URI.parse(url+'/')
+      uriPath = URI.parse(url)
       puts uriPath.to_s
       req=Net::HTTP::Get.new(uriPath.to_s)
       Net::HTTP.start(uriPath.host, uriPath.port) do |http|
@@ -63,10 +63,12 @@ module Commands
   end
 
 =begin
-   searchMixcloud: returns detail about artist or mix
+   mixcloud: returns detail about artist or mix
    on MixCloud (very simple)
+   And make a rapid search :) 
 =end
   def Commands.mixcloud(what)
+    searchType = String.new
     parsedBody = Hash.new
     splitted = String(what).split(" ")
     mixcloudapi="http://api.mixcloud.com/"
@@ -75,20 +77,44 @@ module Commands
     if splitted.length >= 1 then
       case splitted[0]
       when "details"
-        mixcloudapi+=splitted[1] if splitted.length == 2
-        if splitted.length >= 3
-          mixname=String.new
+        mixname=String.new
+        mixcloudapi+=splitted[1]+"/" if splitted.length == 2
+        if splitted.length > 3 then
           splitted[2..splitted.length].each do |i|
             mixname+=i+" "
           end
-
           mixname[mixname.length-1]=""
           mixname=mixname.downcase.gsub!(" ","-")
-          
-          mixcloudapi+=splitted[1].to_s+"/".to_s+mixname.to_s
+          mixcloudapi+=splitted[1].to_s+"/"+mixname.to_s+"/"
+        elsif splitted.length == 3 then
+          mixname=splitted[2]
+          mixname=mixname.downcase
+          mixcloudapi+=splitted[1].to_s+"/"+mixname.to_s+"/"
         end
         
         return "--> You should specify <artist> [mix]" if splitted.length == 1
+      when "search"
+        if splitted[1] == "cloudcast" or splitted[1] == "user" or splitted[1] == "tag" then
+          searchType=splitted[1].to_s
+        else
+          return "--> Non-valid search filter!"
+        end
+
+        searchQuery = String.new
+        if splitted.length > 3 then
+          splitted[2..splitted.length-1].each do |i|
+            searchQuery+=i+" "
+          end
+          searchQuery[searchQuery.length-1]=""
+          searchQuery=searchQuery.downcase.gsub!(" ","+")
+          mixcloudapi=sprintf mixcloudapi+"search/?q=%s&type=%s",searchQuery, searchType
+        elsif splitted.length == 3 then
+          searchQuery=splitted[2]
+          searchQuery=searchQuery.downcase
+          mixcloudapi+= sprintf "search/?q=%s&type=%s", searchQuery, searchType
+        else
+          return "--> Not enough arguments"
+        end
       else
         return "--> Non-valid option!"
       end
@@ -98,13 +124,6 @@ module Commands
       body = resp.body
       if not body.empty? then
         parsedBody = JSON.parse(body)
-
-        #This condition may be useless
-        if parsedBody["key"] == nil then
-          return "--> Artist / Mix does not exist!"
-        end
-        ##
-        
       else
         return "--> Oops! Got empty body! Can't be parsed!"
       end

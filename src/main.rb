@@ -89,4 +89,8 @@ begin
 rescue Interrupt
   puts "Byebye :)"
   exit 0
+rescue TypeError => err
+  puts "!! TypeError Exception Handled !!"
+  puts " --> #{err}"
+  puts "!! =========== END =========== !!"
 end

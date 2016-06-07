@@ -11,7 +11,7 @@ rescue LoadError => err
 end
 
 #change this constant for the Token
-TOKEN="228855504:AAHh5fhFyEpel0WqTrYNCwVUKy3QeKumDcc"
+TOKEN="YOUR-TOKEN-HERE"
 
 #Main class
 class PippoBot

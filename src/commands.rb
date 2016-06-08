@@ -31,7 +31,7 @@ module Commands
    * contains various useful functions
 =end
   module Utils
-    #Utils.makeHTTPRequest : makes an HTTP request and returns response
+    #Utils.makeHTTPRequest : makes an HTTP request and returns response object
     def Utils.makeHTTPRequest(url)
       uriPath = URI.parse(url)
       puts uriPath.to_s
@@ -147,10 +147,35 @@ Artist Mixcloud URL: %s\n",parsedBody["username"], parsedBody["follower_count"],
         formattedText+=sprintf "Mix description: %s\n",parsedBody["description"].to_s if parsedBody["description"] == nil or
            not parsedBody["description"].empty?
       end
-      #when "search"
-      
+    when "search"
+      formattedText=String.new
+      #need to get array
+      arr = parsedBody["data"]
+      if arr == nil or arr.empty? then
+        return "--> This search produced NO result!"
+      end
+
+      arr.each_with_index do |elem,index|
+        formattedText+= sprintf "==> %s\nURL: %s\n", elem["name"], elem["url"]
+        formattedText+= sprintf "Username: %s\n", elem["username"] if searchType == "user"
+
+        if searchType == "cloudcast" then
+          userInfo = elem["user"]
+          formattedText+= sprintf "Uploader: %s\nUploader URL: %s\nUploader Name: %s\nPlayed: %d time(s)\nFav: %d\nRepost: %d time(s)\n",
+                                  userInfo["username"], userInfo["url"], userInfo["name"],
+                                  elem["play_count"],elem["favorite_count"],elem["repost_count"]
+          if index >= 7 then
+            return formattedText+"\n===> TOO MUCH OUTPUT! <==== (8 result max.)"
+          end
+        end
+
+        if index >= 30 then
+          return formattedText+"\n===> TOO MUCH OUTPUT! <=== (31 result max.)"
+        end
+      end
+
+      return formattedText
     end
-    
   end
   
 =begin

@@ -30,13 +30,13 @@ Pippo is a Telegram Bot, written in Ruby. Base bot: [eljojo/telegram_bot](https:
 
  * Mixcloud
 	~~~
-	pippo mixcloud search _[tag|user|cloudcast]_ _<query>_ #searches query using a filter
+	pippo mixcloud search [tag|user|cloudcast] <query> #searches query using a filter
 	~~~
 
 	~~~
-	pippo mixcloud details _artist_ #searches details about "artist"
+	pippo mixcloud details artist #searches details about "artist"
 	~~~
 
 	~~~
-	pippo mixcloud details _artist_ _mix_ #searches details about "artist/mix"
+	pippo mixcloud details artist mix #searches details about "artist/mix"
 	~~~

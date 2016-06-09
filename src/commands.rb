@@ -14,6 +14,7 @@ begin
   require 'net/http'
   require 'json'
   require 'uri'
+  require 'kat'
 rescue LoadError => err
   puts "--> Error while loading module: #{err}"
   exit 1
@@ -177,6 +178,39 @@ Artist Mixcloud URL: %s\n",parsedBody["username"], parsedBody["follower_count"],
       return formattedText
     end
   end
+
+  def Commands.kat(what)
+    category=String.new
+    searchQuery=String.new
+    
+    if what.length == 0 then
+      return "--> Not enough arguments: [category] <query>"
+    end
+
+    what=what.split(" ")
+    
+    if what.length == 1 then
+      return "--> Not enough arguments: ([nocat|category]) <query>"
+    elsif what.length > 1 then
+      category=what[0]
+      what[1..what.length].each do |elem|
+        searchQuery+=elem + " "
+      end
+    end
+
+    searchQuery[searchQuery.length-1]=""
+    
+    if category == "nocat" then
+      katsearch = Kat.search(searchQuery)
+    else
+      katsearch = Kat.search(searchQuery, {
+                            :category => category
+                          })
+    end
+    searched = katsearch.search
+
+    searched[0].to_s
+  end
   
 =begin
   Hash which contains
@@ -187,6 +221,7 @@ Artist Mixcloud URL: %s\n",parsedBody["username"], parsedBody["follower_count"],
   HASH={
     "sayText"=> method(:sayText),
     "saluda"=>method(:saluda),
-    "mixcloud" => method(:mixcloud)
+    "mixcloud" => method(:mixcloud),
+    "katsearch" => method(:kat)
   }
 end

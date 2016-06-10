@@ -184,6 +184,7 @@ Artist Mixcloud URL: %s\n",parsedBody["username"], parsedBody["follower_count"],
    * need to specify <category|nocat> <query>
 =end
   def Commands.kat(what)
+    what=what.to_s
     category=String.new
     searchQuery=String.new
     
@@ -194,7 +195,7 @@ Artist Mixcloud URL: %s\n",parsedBody["username"], parsedBody["follower_count"],
     what=what.split(" ")
     
     if what.length == 1 then
-      return "--> Not enough arguments: ([nocat|category]) <query>"
+      return "--> Not enough arguments: ([category]) <query>"
     elsif what.length > 1 then
       category=what[0]
       what[1..what.length].each do |elem|
@@ -204,21 +205,20 @@ Artist Mixcloud URL: %s\n",parsedBody["username"], parsedBody["follower_count"],
 
     searchQuery[searchQuery.length-1]=""
     
-    if category == "nocat" then
-      katsearch = Kat.search(searchQuery)
-    else
-      katsearch = Kat.search(searchQuery, {
-                            :category => category
-                          })
-    end
-    
+    katsearch = Kat.search(searchQuery, {:category => category })
+
     formattedText = String.new
-    searched = katsearch.search 
-    
-    searched[0..4].each_with_index do |elem,index|
-      formattedText += sprintf "===> %s\n* Age: %s\n* Seeds: %d\n* Leeches: %d\n* Magnet: %s\n* URL: kat.cr%s\n",
+    searched=katsearch.search 
+
+    begin
+      searched[0..4].each do |elem|
+        formattedText += sprintf "===> %s\n* Age: %s\n* Seeds: %d\n* Leeches: %d\n* Magnet: %s\n* Torrent DL: %s\n* Files: %d\n* URL: kat.cr%s\n",
                         elem["title".to_sym],elem["age".to_sym], elem["seeds".to_sym], elem["leeches".to_sym],
-                        elem["magnet".to_sym],elem["path".to_sym]
+                        elem["magnet".to_sym],elem["download".to_sym],elem["files".to_sym],elem["path".to_sym]
+      end
+    rescue NoMethodError
+      puts "==> No match"
+      return "==> Oops! Check query or category!"
     end
     
     return formattedText

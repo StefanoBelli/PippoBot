@@ -89,8 +89,15 @@ begin
 rescue Interrupt
   puts "Byebye :)"
   exit 0
-rescue TypeError => err
-  puts "!! TypeError Exception Handled !!"
-  puts " --> #{err}"
-  puts "!! =========== END =========== !!"
+rescue Exception => err
+  puts "\n!! Exception Handled !!"
+  puts " ==> Exception Type: #{err.class}"
+  puts " ==> Exception Message: #{err.message}"
+  puts "=Backtrace="
+  err.backtrace.each do |ln|
+    puts " --> #{ln}"
+  end
+  puts "  * Please Open an issue @ https://github.com/StefanoBelli/PippoBot "
+  puts "  * Pasting this message"
+  puts "!! ------------- END -------------- !!\n"
 end

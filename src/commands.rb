@@ -179,6 +179,10 @@ Artist Mixcloud URL: %s\n",parsedBody["username"], parsedBody["follower_count"],
     end
   end
 
+=begin
+  Searches on Kickass Torrents
+   * need to specify <category|nocat> <query>
+=end
   def Commands.kat(what)
     category=String.new
     searchQuery=String.new
@@ -207,9 +211,17 @@ Artist Mixcloud URL: %s\n",parsedBody["username"], parsedBody["follower_count"],
                             :category => category
                           })
     end
-    searched = katsearch.search
-
-    searched[0].to_s
+    
+    formattedText = String.new
+    searched = katsearch.search 
+    
+    searched[0..4].each_with_index do |elem,index|
+      formattedText += sprintf "===> %s\n* Age: %s\n* Seeds: %d\n* Leeches: %d\n* Magnet: %s\n* URL: kat.cr%s\n",
+                        elem["title".to_sym],elem["age".to_sym], elem["seeds".to_sym], elem["leeches".to_sym],
+                        elem["magnet".to_sym],elem["path".to_sym]
+    end
+    
+    return formattedText
   end
   
 =begin
@@ -219,9 +231,9 @@ Artist Mixcloud URL: %s\n",parsedBody["username"], parsedBody["follower_count"],
   you add a function
 =end
   HASH={
-    "sayText"=> method(:sayText),
-    "saluda"=>method(:saluda),
-    "mixcloud" => method(:mixcloud),
-    "katsearch" => method(:kat)
+    "sayText"   =>  method(:sayText),
+    "saluda"    =>  method(:saluda),
+    "mixcloud"  =>  method(:mixcloud),
+    "katsearch" =>  method(:kat)
   }
 end

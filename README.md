@@ -40,3 +40,13 @@ Pippo is a Telegram Bot, written in Ruby. Base bot: [eljojo/telegram_bot](https:
 	~~~
 	pippo mixcloud details artist mix #searches details about "artist/mix"
 	~~~
+ 
+ * KAT - Kickass Torrent Search
+   Shows only first 5 results 
+   ~~~
+	pippo katsearch nocat silicon valley #searches for Silicon valley without filter
+	~~~
+
+	~~~
+	pippo katsearch tv silicon valley #seaches for silicon valley using 'tv' category filter
+	~~~

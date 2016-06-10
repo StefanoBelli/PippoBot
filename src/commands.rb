@@ -16,7 +16,7 @@ begin
   require 'uri'
   require 'kat'
 rescue LoadError => err
-  puts "--> Error while loading module: #{err}"
+  $stderr.puts "--> Error while loading module: #{err}"
   exit 1
 end
 
@@ -35,7 +35,6 @@ module Commands
     #Utils.makeHTTPRequest : makes an HTTP request and returns response object
     def Utils.makeHTTPRequest(url)
       uriPath = URI.parse(url)
-      puts uriPath.to_s
       req=Net::HTTP::Get.new(uriPath.to_s)
       Net::HTTP.start(uriPath.host, uriPath.port) do |http|
         response=http.request(req)
@@ -204,6 +203,8 @@ Artist Mixcloud URL: %s\n",parsedBody["username"], parsedBody["follower_count"],
     end
 
     searchQuery[searchQuery.length-1]=""
+
+    category == "nocat" ? category=nil : category=category
     
     katsearch = Kat.search(searchQuery, {:category => category })
 
@@ -217,8 +218,8 @@ Artist Mixcloud URL: %s\n",parsedBody["username"], parsedBody["follower_count"],
                         elem["magnet".to_sym],elem["download".to_sym],elem["files".to_sym],elem["path".to_sym]
       end
     rescue NoMethodError
-      puts "==> No match"
-      return "==> Oops! Check query or category!"
+      $stderr.puts "==> Something went wrong!!"
+      return "==> Oops! Check query or category! / If not then something went wrong!"
     end
     
     return formattedText

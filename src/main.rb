@@ -6,10 +6,11 @@ begin
   #Commands module location
   require './commands.rb'
 rescue LoadError => err
-  puts "Failed to load module: #{err}"
+  $stderr.puts "Failed to load module: #{err}"
   exit 1
 end
 
+#will be revoked :D 
 #change this constant for the Token
 TOKEN="228855504:AAHh5fhFyEpel0WqTrYNCwVUKy3QeKumDcc"
 
@@ -90,14 +91,14 @@ rescue Interrupt
   puts "Byebye :)"
   exit 0
 rescue Exception => err
-  puts "\n!! Exception Handled !!"
-  puts " ==> Exception Type: #{err.class}"
-  puts " ==> Exception Message: #{err.message}"
-  puts "=Backtrace="
+  $stderr.puts "\n!! Exception Handled !!"
+  $stderr.puts " ==> Exception Type: #{err.class}"
+  $stderr.puts " ==> Exception Message: #{err.message}"
+  $stderr.puts "=Backtrace="
   err.backtrace.each do |ln|
-    puts " --> #{ln}"
+    $stderr.puts " --> #{ln}"
   end
-  puts "  * Please Open an issue @ https://github.com/StefanoBelli/PippoBot "
-  puts "  * Pasting this message"
-  puts "!! ------------- END -------------- !!\n"
+  $stderr.puts "  * Please Open an issue @ https://github.com/StefanoBelli/PippoBot "
+  $stderr.puts "  * Pasting this message"
+  $stderr.puts "!! ------------- END -------------- !!\n"
 end

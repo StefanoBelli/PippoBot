@@ -14,8 +14,9 @@ begin
   require 'net/http'
   require 'json'
   require 'uri'
+  require 'kat'
 rescue LoadError => err
-  puts "--> Error while loading module: #{err}"
+  $stderr.puts "--> Error while loading module: #{err}"
   exit 1
 end
 
@@ -34,7 +35,6 @@ module Commands
     #Utils.makeHTTPRequest : makes an HTTP request and returns response object
     def Utils.makeHTTPRequest(url)
       uriPath = URI.parse(url)
-      puts uriPath.to_s
       req=Net::HTTP::Get.new(uriPath.to_s)
       Net::HTTP.start(uriPath.host, uriPath.port) do |http|
         response=http.request(req)
@@ -177,6 +177,53 @@ Artist Mixcloud URL: %s\n",parsedBody["username"], parsedBody["follower_count"],
       return formattedText
     end
   end
+
+=begin
+  Searches on Kickass Torrents
+   * need to specify <category|nocat> <query>
+=end
+  def Commands.kat(what)
+    what=what.to_s
+    category=String.new
+    searchQuery=String.new
+    
+    if what.length == 0 then
+      return "--> Not enough arguments: [category] <query>"
+    end
+
+    what=what.split(" ")
+    
+    if what.length == 1 then
+      return "--> Not enough arguments: ([category]) <query>"
+    elsif what.length > 1 then
+      category=what[0]
+      what[1..what.length].each do |elem|
+        searchQuery+=elem + " "
+      end
+    end
+
+    searchQuery[searchQuery.length-1]=""
+
+    category == "nocat" ? category=nil : category=category
+    
+    katsearch = Kat.search(searchQuery, {:category => category })
+
+    formattedText = String.new
+    searched=katsearch.search 
+
+    begin
+      searched[0..4].each do |elem|
+        formattedText += sprintf "===> %s\n* Age: %s\n* Seeds: %d\n* Leeches: %d\n* Magnet: %s\n* Torrent DL: %s\n* Files: %d\n* URL: kat.cr%s\n",
+                        elem["title".to_sym],elem["age".to_sym], elem["seeds".to_sym], elem["leeches".to_sym],
+                        elem["magnet".to_sym],elem["download".to_sym],elem["files".to_sym],elem["path".to_sym]
+      end
+    rescue NoMethodError
+      $stderr.puts "==> Something went wrong!!"
+      return "==> Oops! Check query or category! / If not then something went wrong!"
+    end
+    
+    return formattedText
+  end
   
 =begin
   Hash which contains
@@ -185,8 +232,9 @@ Artist Mixcloud URL: %s\n",parsedBody["username"], parsedBody["follower_count"],
   you add a function
 =end
   HASH={
-    "sayText"=> method(:sayText),
-    "saluda"=>method(:saluda),
-    "mixcloud" => method(:mixcloud)
+    "sayText"   =>  method(:sayText),
+    "saluda"    =>  method(:saluda),
+    "mixcloud"  =>  method(:mixcloud),
+    "katsearch" =>  method(:kat)
   }
 end

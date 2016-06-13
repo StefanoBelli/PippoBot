@@ -12,7 +12,7 @@ end
 
 #will be revoked :D 
 #change this constant for the Token
-TOKEN="228855504:AAHh5fhFyEpel0WqTrYNCwVUKy3QeKumDcc"
+TOKEN=""
 
 #Main class
 class PippoBot
@@ -36,7 +36,7 @@ class PippoBot
   def messageHandler
     @BOT_INSTANCE.get_updates(fail_silently: false) do |msg|
       msg.reply do |reply|
-	gotCmd=msg.get_command_for(@BOT_INSTANCE)
+	gotCmd=(msg.get_command_for(@BOT_INSTANCE)).to_s
         if gotCmd.match(@PATTERN) then
           messageParser reply,gotCmd
         end

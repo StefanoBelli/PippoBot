@@ -36,14 +36,18 @@ module Commands
     def Utils.makeHTTPRequest(url)
       uriPath = URI.parse(url)
       req=Net::HTTP::Get.new(uriPath.to_s)
-      Net::HTTP.start(uriPath.host, uriPath.port) do |http|
-        response=http.request(req)
-        case response
-        when Net::HTTPSuccess then
-          return response
-        else
-          return nil
+      begin
+        Net::HTTP.start(uriPath.host, uriPath.port) do |http|
+          response=http.request(req)
+          case response
+          when Net::HTTPSuccess then
+            return response
+          else
+            return nil
+          end
         end
+      rescue NoMethodError
+        $stderr.puts "--> Something went wrong with makeHTTPRequest()... ignoring"
       end
     end
   end

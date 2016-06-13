@@ -12,7 +12,7 @@ end
 
 #will be revoked :D 
 #change this constant for the Token
-TOKEN=""
+TOKEN="228855504:AAHQEWkC3ebqA_ZqsYY5CWk1xSgKsIm7Mfw"
 
 #Main class
 class PippoBot

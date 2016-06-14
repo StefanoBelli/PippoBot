@@ -4,6 +4,7 @@ Pippo is a Telegram Bot, written in Ruby. Base bot: [eljojo/telegram_bot](https:
 ### How to run
 
  _Requires Ruby-Bundler_
+ 
  *You must set PIPPOBOT_TOKEN environment variable, with YOUR token*
 
  * Inside PippoBot directory just type

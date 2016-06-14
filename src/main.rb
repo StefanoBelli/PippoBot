@@ -12,7 +12,14 @@ end
 
 #will be revoked :D 
 #change this constant for the Token
-TOKEN="228855504:AAHQEWkC3ebqA_ZqsYY5CWk1xSgKsIm7Mfw"
+TOKEN=ENV["PIPPOBOT_TOKEN"]
+
+if TOKEN == nil or TOKEN == "" or TOKEN.empty? then
+  $stderr.puts "--> You must set PIPPOBOT_TOKEN environment variable"
+  $stderr.puts "--> Bash/Zsh/... : export PIPPOBOT_TOKEN=\"your-token\" "
+  $stderr.puts "--> Fish/...     : set -x PIPPOBOT_TOKEN \"your-token\" "
+  exit 2
+end
 
 #Main class
 class PippoBot

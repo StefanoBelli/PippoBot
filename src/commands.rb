@@ -249,18 +249,18 @@ Artist Mixcloud URL: %s\n",parsedBody["username"], parsedBody["follower_count"],
     fullCityName = what[1..what.length-1]
 
     result = String.new
-    if what[0] == "current" then
-      result = OpenWeather::Current.city(fullCityName,{APPID: api_token})      
-    elsif what[0] == "forecast" then
-      result = OpenWeather::Forecast.city(fullCityName,{APPID: api_token})
-    elsif what[0] == "forecastDaily" then
-      result = OpenWeather::ForecastDaily.city(fullCityName,{APPID: api_token})
+    if what[0] == "current"
+      result = OpenWeather::Current.city(fullCityName,{APPID: api_token, units: 'metric'})      
     else
       return "--> Non-valid option!"
     end
 
-    result = JSON.parse[result]
+    fmtTxt = sprintf "=> %s\nCountry: %s\nSituation: %s\nTemperature: %f\nMin/Max temp: %f/%f\nClouds: %d",
+                       result["name"],result["sys"]["country"],result["weather"][0]["description"],
+                       result["main"]["temp"],result["main"]["temp_min"],result["main"]["temp_max"],
+                       result["clouds"]["all"]
     
+    return fmtTxt
   end
 =begin     
   Hash which contains

@@ -8,13 +8,13 @@ The bot will do the rest!
 3. update the HASH (Hash), this way:
  HASH={"typed_function_name",method(:methodName)}
 =end
-
 begin
   require 'rubygems'
   require 'net/http'
   require 'json'
   require 'uri'
   require 'kat'
+  require 'open_weather'
 rescue LoadError => err
   $stderr.puts "--> Error while loading module: #{err}"
   exit 1
@@ -228,8 +228,41 @@ Artist Mixcloud URL: %s\n",parsedBody["username"], parsedBody["follower_count"],
     
     return formattedText
   end
-  
+
 =begin
+  OpenWeather search!
+=end
+  def Commands.weather(what)
+    api_token=ENV["PIPPOBOT_OPWEATHER_APITOK"]
+
+    if api_token == nil or api_token == "" or api_token.empty? then
+      return "--> Oops! PIPPOBOT_OPWEATHER_APITOK environment variable not set!\nUnable to use OpenWeather"
+    end
+
+    what=String(what)
+    what=what.split(" ")
+
+    if what.length < 2 then
+      return "--> Not enough arguments"
+    end
+
+    fullCityName = what[1..what.length-1]
+
+    result = String.new
+    if what[0] == "current" then
+      result = OpenWeather::Current.city(fullCityName,{APPID: api_token})      
+    elsif what[0] == "forecast" then
+      result = OpenWeather::Forecast.city(fullCityName,{APPID: api_token})
+    elsif what[0] == "forecastDaily" then
+      result = OpenWeather::ForecastDaily.city(fullCityName,{APPID: api_token})
+    else
+      return "--> Non-valid option!"
+    end
+
+    result = JSON.parse[result]
+    
+  end
+=begin     
   Hash which contains
    (typed_func_name => method(:method_name))
   needs to be updated every time
@@ -239,6 +272,7 @@ Artist Mixcloud URL: %s\n",parsedBody["username"], parsedBody["follower_count"],
     "sayText"   =>  method(:sayText),
     "saluda"    =>  method(:saluda),
     "mixcloud"  =>  method(:mixcloud),
-    "katsearch" =>  method(:kat)
+    "katsearch" =>  method(:kat),
+    "weather"   =>  method(:weather)
   }
 end

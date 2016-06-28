@@ -52,3 +52,11 @@ Pippo is a Telegram Bot, written in Ruby. Base bot: [eljojo/telegram_bot](https:
 	~~~
 	pippo katsearch tv silicon valley #seaches for silicon valley using 'tv' category filter
 	~~~
+
+ * OpenWeather - Get an API and get the current weather situation
+
+    _YOU NEED TO USE PIPPOBOT_OPWEATHER_APITOK environment variable_
+
+	~~~
+	pippo weather current New York
+	~~~
